@@ -2,7 +2,8 @@ import React from 'react';
 import type { OptimizationResult } from '@/lib/optimizer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download } from 'lucide-react';
+import { Download, FileJson } from 'lucide-react';
+import { exportDXFFile } from '@/lib/dxf-export';
 
 interface ResultsSummaryProps {
   result: OptimizationResult | null;
@@ -12,6 +13,12 @@ export function ResultsSummary({ result }: ResultsSummaryProps) {
   if (!result) {
     return null;
   }
+
+  const handleExportDXF = () => {
+    if (result) {
+      exportDXFFile(result, 'freecut-layout.dxf');
+    }
+  };
 
   const handleExportPDF = () => {
     // Create a simple text-based export for now

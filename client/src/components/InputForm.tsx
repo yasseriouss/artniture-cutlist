@@ -6,13 +6,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { isValidDimension, isValidQuantity } from '@/lib/utils';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Settings } from 'lucide-react';
+import { EdgeBandingConfig } from './EdgeBandingConfig';
+import { GrooveConfig } from './GrooveConfig';
+import type { EdgeBand, Groove } from '@/lib/optimizer';
 
 interface InputFormProps {
   onAddStock: (stock: { width: number; height: number; quantity: number; pattern?: 'none' | 'horizontal' | 'vertical' }) => void;
-  onAddCut: (cut: { width: number; height: number; quantity: number; pattern?: 'none' | 'horizontal' | 'vertical' }) => void;
+  onAddCut: (cut: { width: number; height: number; quantity: number; pattern?: 'none' | 'horizontal' | 'vertical'; edgeBand?: EdgeBand; groove?: Groove }) => void;
   stockPieces: Array<{ id: string; width: number; height: number; quantity: number }>;
-  cutPieces: Array<{ id: string; width: number; height: number; quantity: number }>;
+  cutPieces: Array<{ id: string; width: number; height: number; quantity: number; edgeBand?: EdgeBand; groove?: Groove }>;
   onRemoveStock: (id: string) => void;
   onRemoveCut: (id: string) => void;
 }
@@ -34,6 +37,10 @@ export function InputForm({
   const [cutHeight, setCutHeight] = useState('');
   const [cutQuantity, setCutQuantity] = useState('1');
   const [cutPattern, setCutPattern] = useState('none');
+  const [showEdgeBandConfig, setShowEdgeBandConfig] = useState(false);
+  const [showGrooveConfig, setShowGrooveConfig] = useState(false);
+  const [currentEdgeBand, setCurrentEdgeBand] = useState<EdgeBand | undefined>();
+  const [currentGroove, setCurrentGroove] = useState<Groove | undefined>();
 
   const handleAddStock = () => {
     if (!isValidDimension(stockWidth) || !isValidDimension(stockHeight) || !isValidQuantity(stockQuantity)) {
@@ -60,11 +67,17 @@ export function InputForm({
       height: parseFloat(cutHeight),
       quantity: parseInt(cutQuantity, 10),
       pattern: cutPattern as 'none' | 'horizontal' | 'vertical',
+      edgeBand: currentEdgeBand,
+      groove: currentGroove,
     });
     setCutWidth('');
     setCutHeight('');
     setCutQuantity('1');
     setCutPattern('none');
+    setCurrentEdgeBand(undefined);
+    setCurrentGroove(undefined);
+    setShowEdgeBandConfig(false);
+    setShowGrooveConfig(false);
   };
 
   return (
@@ -233,10 +246,70 @@ export function InputForm({
                 </div>
               </div>
 
-              <Button onClick={handleAddCut} className="w-full bg-amber-600 hover:bg-amber-700">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Cut Piece
-              </Button>
+              <div className="space-y-2">
+                <Button onClick={handleAddCut} className="w-full bg-amber-600 hover:bg-amber-700">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Cut Piece
+                </Button>
+                <Button
+                  onClick={() => setShowEdgeBandConfig(!showEdgeBandConfig)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  {currentEdgeBand ? 'Edit Edge Banding' : 'Add Edge Banding'}
+                </Button>
+                <Button
+                  onClick={() => setShowGrooveConfig(!showGrooveConfig)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  {currentGroove?.enabled ? 'Edit Groove' : 'Add Groove'}
+                </Button>
+              </div>
+
+              {showEdgeBandConfig && (
+                <EdgeBandingConfig
+                  onApply={(band) => {
+                    setCurrentEdgeBand(band);
+                    setShowEdgeBandConfig(false);
+                  }}
+                  onCancel={() => setShowEdgeBandConfig(false)}
+                />
+              )}
+
+              {showGrooveConfig && (
+                <GrooveConfig
+                  onApply={(groove) => {
+                    setCurrentGroove(groove);
+                    setShowGrooveConfig(false);
+                  }}
+                  onCancel={() => setShowGrooveConfig(false)}
+                />
+              )}
+
+              {currentEdgeBand && (
+                <Card className="border-amber-200 bg-amber-50 p-3">
+                  <div className="text-sm">
+                    <p className="font-semibold text-amber-900">Edge Banding: {currentEdgeBand.name}</p>
+                    <p className="text-amber-800 text-xs">
+                      {currentEdgeBand.thickness}mm - {Object.entries(currentEdgeBand.sides).filter(([, v]) => v).map(([k]) => k).join(', ')}
+                    </p>
+                  </div>
+                </Card>
+              )}
+
+              {currentGroove?.enabled && (
+                <Card className="border-blue-200 bg-blue-50 p-3">
+                  <div className="text-sm">
+                    <p className="font-semibold text-blue-900">Groove: {currentGroove.width}mm</p>
+                    <p className="text-blue-800 text-xs">{currentGroove.direction} {currentGroove.offset ? `(offset: ${currentGroove.offset}mm)` : ''}</p>
+                  </div>
+                </Card>
+              )}
             </CardContent>
           </Card>
 
@@ -252,6 +325,8 @@ export function InputForm({
                       <div className="text-sm">
                         <span className="font-semibold">{piece.width}×{piece.height}</span>
                         <span className="text-muted-foreground ml-2">×{piece.quantity}</span>
+                        {piece.edgeBand && <span className="text-xs text-amber-600 ml-2">[Band: {piece.edgeBand.name}]</span>}
+                        {piece.groove?.enabled && <span className="text-xs text-blue-600 ml-2">[Groove]</span>}
                       </div>
                       <button
                         onClick={() => onRemoveCut(piece.id)}

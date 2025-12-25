@@ -1,28 +1,61 @@
 /**
  * FreeCut Web - Rectangular Cut Optimizer
  * 
- * This module implements a genetic algorithm-based optimizer for cutting rectangular
+ * This module implements a guillotine-based optimizer for cutting rectangular
  * pieces from panels, minimizing waste and maximizing material utilization.
+ * Supports edge banding, grinding, textures, and customer tracking.
  * 
  * Design Philosophy: Industrial Minimalism
  * - Precision and clarity in algorithm output
  * - Efficient data structures for optimization
  */
 
-export interface StockPiece {
-  id: string;
+export interface EdgeBandSides {
+  top: number;
+  left: number;
+  bottom: number;
+  right: number;
+}
+
+export interface EdgeBand {
+  name: string;
+  thickness: number;
+  sides: EdgeBandSides;
+}
+
+export interface Groove {
+  enabled: boolean;
   width: number;
-  height: number;
-  quantity: number;
-  pattern?: 'none' | 'horizontal' | 'vertical';
+  direction: 'horizontal' | 'vertical';
+  offset?: number;
 }
 
 export interface CutPiece {
   id: string;
+  length: number;
   width: number;
-  height: number;
   quantity: number;
-  pattern?: 'none' | 'horizontal' | 'vertical';
+  material: string;
+  texture: string;
+  label: string;
+  edgeBands: EdgeBandSides;
+  grinding: string;
+  customerName: string;
+  edgeBand?: EdgeBand;
+  groove?: Groove;
+}
+
+export interface StockPiece {
+  id: string;
+  length: number;
+  width: number;
+  quantity: number;
+  material: string;
+  texture: string;
+  label: string;
+  price: number;
+  trimEdge: boolean;
+  priority: boolean;
 }
 
 export interface CutPosition {
@@ -48,6 +81,8 @@ export interface OptimizationResult {
   totalStockUsed: number;
   totalCutsNeeded: number;
   cutsPlaced: number;
+  cuts: CutPiece[];
+  stocks: StockPiece[];
 }
 
 /**
@@ -64,7 +99,7 @@ function guillotineLayout(
   let wasteArea = 0;
 
   // Sort cuts by area (largest first) for better packing
-  remainingCuts.sort((a, b) => (b.width * b.height - a.width * a.height));
+  remainingCuts.sort((a, b) => (b.length * b.width - a.length * a.width));
 
   // Simple greedy placement
   let usedArea = 0;
@@ -74,12 +109,12 @@ function guillotineLayout(
       const placement = findPlacement(positions, stock, cut, cutWidth);
       if (placement) {
         positions.push(placement);
-        usedArea += cut.width * cut.height;
+        usedArea += cut.length * cut.width;
       }
     }
   }
 
-  const stockArea = stock.width * stock.height;
+  const stockArea = stock.length * stock.width;
   wasteArea = stockArea - usedArea;
   const utilizationRate = (usedArea / stockArea) * 100;
 
@@ -101,15 +136,15 @@ function findPlacement(
   cutWidth: number
 ): CutPosition | null {
   // Try different positions
-  for (let x = 0; x <= stock.width - cut.width; x += 10) {
-    for (let y = 0; y <= stock.height - cut.height; y += 10) {
-      if (canPlacePiece(positions, x, y, cut.width, cut.height, cutWidth)) {
+  for (let x = 0; x <= stock.length - cut.length; x += 10) {
+    for (let y = 0; y <= stock.width - cut.width; y += 10) {
+      if (canPlacePiece(positions, x, y, cut.length, cut.width, cutWidth)) {
         return {
           pieceId: cut.id,
           x,
           y,
-          width: cut.width,
-          height: cut.height,
+          width: cut.length,
+          height: cut.width,
           rotated: false,
         };
       }
@@ -117,16 +152,16 @@ function findPlacement(
   }
 
   // Try rotated
-  if (cut.width !== cut.height) {
-    for (let x = 0; x <= stock.width - cut.height; x += 10) {
-      for (let y = 0; y <= stock.height - cut.width; y += 10) {
-        if (canPlacePiece(positions, x, y, cut.height, cut.width, cutWidth)) {
+  if (cut.length !== cut.width) {
+    for (let x = 0; x <= stock.length - cut.width; x += 10) {
+      for (let y = 0; y <= stock.width - cut.length; y += 10) {
+        if (canPlacePiece(positions, x, y, cut.width, cut.length, cutWidth)) {
           return {
             pieceId: cut.id,
             x,
             y,
-            width: cut.height,
-            height: cut.width,
+            width: cut.width,
+            height: cut.length,
             rotated: true,
           };
         }
@@ -197,6 +232,8 @@ export function optimize(
       totalStockUsed: 0,
       totalCutsNeeded: 0,
       cutsPlaced: 0,
+      cuts: cutPieces,
+      stocks: stockPieces,
     };
   }
 
@@ -214,7 +251,7 @@ export function optimize(
   }
 
   const totalWaste = layouts.reduce((sum, layout) => sum + layout.wasteArea, 0);
-  const totalStockArea = stockPieces.reduce((sum, stock) => sum + stock.width * stock.height * stock.quantity, 0);
+  const totalStockArea = stockPieces.reduce((sum, stock) => sum + stock.length * stock.width * stock.quantity, 0);
   const averageUtilization = totalStockArea > 0 ? ((totalStockArea - totalWaste) / totalStockArea) * 100 : 0;
 
   return {
@@ -224,6 +261,8 @@ export function optimize(
     totalStockUsed: stockPieces.length,
     totalCutsNeeded,
     cutsPlaced,
+    cuts: cutPieces,
+    stocks: stockPieces,
   };
 }
 
