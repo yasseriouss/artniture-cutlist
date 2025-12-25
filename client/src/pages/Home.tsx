@@ -4,9 +4,15 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, Trash2, Download, Play, Square, CheckCircle, Save, Printer, FileJson, ArrowUpDown } from 'lucide-react';
+import { Plus, Trash2, Download, Play, Square, CheckCircle, Save, Printer, FileJson, ArrowUpDown, ChevronLeft, ChevronRight, Copy, FileText } from 'lucide-react';
 import type { CutPiece, StockPiece, OptimizationResult } from '@/lib/optimizer';
 import { optimize } from '@/lib/optimizer';
+import { exportDXFFile } from '@/lib/dxf-export-enhanced';
+import { exportPDFReport } from '@/lib/pdf-export-enhanced';
+import { CutCanvasEnhanced } from '@/components/CutCanvasEnhanced';
+import { EnhancedCutForm } from '@/components/EnhancedCutForm';
+import { EnhancedStockForm } from '@/components/EnhancedStockForm';
+import { exportCuttingListPDF } from '@/lib/pdf-cutting-list';
 import { nanoid } from 'nanoid';
 
 /**
@@ -24,6 +30,7 @@ export default function Home() {
   const [result, setResult] = useState<OptimizationResult | null>(null);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [cutWidth, setCutWidth] = useState(3);
+  const [activeLayout, setActiveLayout] = useState(0);
 
   // Visibility toggles
   const [showIndex, setShowIndex] = useState(true);
@@ -46,9 +53,9 @@ export default function Home() {
     material: 'glass',
     texture: '',
     label: '',
-    grinding: '',
-    customerName: '',
     edgeBands: { top: 0, left: 0, bottom: 0, right: 0 },
+    edgeBand: { name: '', thickness: 0, sides: { top: 0, left: 0, bottom: 0, right: 0 } },
+    groove: { enabled: false, width: 0, direction: 'horizontal' as const },
   });
 
   // New stock piece form
@@ -75,9 +82,11 @@ export default function Home() {
       material: newCut.material || 'glass',
       texture: newCut.texture || '',
       label: newCut.label || '',
-      grinding: newCut.grinding || '',
-      customerName: newCut.customerName || '',
       edgeBands: newCut.edgeBands || { top: 0, left: 0, bottom: 0, right: 0 },
+      edgeBand: newCut.edgeBand,
+      groove: newCut.groove,
+      grinding: '',
+      customerName: '',
     };
 
     setCuts([...cuts, cut]);
@@ -88,9 +97,9 @@ export default function Home() {
       material: 'glass',
       texture: '',
       label: '',
-      grinding: '',
-      customerName: '',
       edgeBands: { top: 0, left: 0, bottom: 0, right: 0 },
+      edgeBand: { name: '', thickness: 0, sides: { top: 0, left: 0, bottom: 0, right: 0 } },
+      groove: { enabled: false, width: 0, direction: 'horizontal' as const },
     });
   };
 
@@ -135,14 +144,25 @@ export default function Home() {
 
   const handleExportDXF = () => {
     if (!result) return;
-    let dxfContent = generateDXF(result);
-    const element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(dxfContent));
-    element.setAttribute('download', 'freecut-layout.dxf');
-    element.style.display = 'none';
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
+    exportDXFFile(result, 'artniture-cutlist.dxf');
+  };
+
+  const handleExportPDF = () => {
+    if (!result) return;
+    exportPDFReport(result, 'artniture-cutlist-report.txt');
+  };
+
+  const handleExportCuttingList = () => {
+    exportCuttingListPDF(cuts, stocks, 'artniture-cutting-list.txt');
+  };
+
+  const handleNavigateLayout = (direction: 'prev' | 'next') => {
+    if (!result) return;
+    if (direction === 'prev' && activeLayout > 0) {
+      setActiveLayout(activeLayout - 1);
+    } else if (direction === 'next' && activeLayout < result.layouts.length - 1) {
+      setActiveLayout(activeLayout + 1);
+    }
   };
 
   return (
@@ -150,8 +170,8 @@ export default function Home() {
       {/* Header */}
       <header className="bg-white border-b border-slate-300 shadow-sm">
         <div className="px-4 py-3 flex items-center justify-between">
-          <h1 className="text-xl font-bold text-slate-900">PIECES</h1>
-          <div className="text-sm text-slate-600">FreeCut - Rectangular Cut Optimizer</div>
+          <h1 className="text-xl font-bold text-slate-900">ARTNITURE CUTLIST</h1>
+          <div className="text-sm text-slate-600">Professional Cutting List Optimizer</div>
         </div>
       </header>
 
@@ -164,8 +184,11 @@ export default function Home() {
               <TabsTrigger value="pieces" className="rounded-none border-r border-slate-300">
                 PIECES
               </TabsTrigger>
-              <TabsTrigger value="stock" className="rounded-none">
+              <TabsTrigger value="stock" className="rounded-none border-r border-slate-300">
                 STOCK
+              </TabsTrigger>
+              <TabsTrigger value="layout" className="rounded-none">
+                LAYOUT
               </TabsTrigger>
             </TabsList>
 
@@ -253,10 +276,21 @@ export default function Home() {
                         )}
                         {showGrinding && <td className="border border-slate-300 px-2 py-2">{cut.grinding}</td>}
                         {showCustomer && <td className="border border-slate-300 px-2 py-2">{cut.customerName}</td>}
-                        <td className="border border-slate-300 px-2 py-2 text-center">
+                        <td className="border border-slate-300 px-2 py-2 text-center flex gap-2 justify-center">
+                          <button
+                            onClick={() => {
+                              const newCut = { ...cut, id: nanoid() };
+                              setCuts([...cuts, newCut]);
+                            }}
+                            className="text-blue-600 hover:text-blue-700"
+                            title="Duplicate piece"
+                          >
+                            <Copy className="w-4 h-4" />
+                          </button>
                           <button
                             onClick={() => setCuts(cuts.filter((c) => c.id !== cut.id))}
                             className="text-red-600 hover:text-red-700"
+                            title="Delete piece"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -268,32 +302,7 @@ export default function Home() {
               </div>
 
               {/* Add Cut Form */}
-              <Card className="p-4 bg-white border border-slate-300">
-                <div className="grid grid-cols-4 gap-3">
-                  <Input
-                    type="number"
-                    placeholder="Length"
-                    value={newCut.length || ''}
-                    onChange={(e) => setNewCut({ ...newCut, length: parseFloat(e.target.value) })}
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Width"
-                    value={newCut.width || ''}
-                    onChange={(e) => setNewCut({ ...newCut, width: parseFloat(e.target.value) })}
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Qty"
-                    value={newCut.quantity || ''}
-                    onChange={(e) => setNewCut({ ...newCut, quantity: parseInt(e.target.value) })}
-                  />
-                  <Button onClick={handleAddCut} className="bg-green-600 hover:bg-green-700">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
-                  </Button>
-                </div>
-              </Card>
+              <EnhancedCutForm newCut={newCut} onCutChange={setNewCut} onAddCut={handleAddCut} />
             </TabsContent>
 
             {/* STOCK Table */}
@@ -358,32 +367,22 @@ export default function Home() {
               </div>
 
               {/* Add Stock Form */}
-              <Card className="p-4 bg-white border border-slate-300">
-                <div className="grid grid-cols-4 gap-3">
-                  <Input
-                    type="number"
-                    placeholder="Length"
-                    value={newStock.length || ''}
-                    onChange={(e) => setNewStock({ ...newStock, length: parseFloat(e.target.value) })}
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Width"
-                    value={newStock.width || ''}
-                    onChange={(e) => setNewStock({ ...newStock, width: parseFloat(e.target.value) })}
-                  />
-                  <Input
-                    type="number"
-                    placeholder="Qty"
-                    value={newStock.quantity || ''}
-                    onChange={(e) => setNewStock({ ...newStock, quantity: parseInt(e.target.value) })}
-                  />
-                  <Button onClick={handleAddStock} className="bg-green-600 hover:bg-green-700">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
+              <EnhancedStockForm newStock={newStock} onStockChange={setNewStock} onAddStock={handleAddStock} />
+            </TabsContent>
+
+            <TabsContent value="layout" className="p-4 space-y-4 overflow-auto">
+              <CutCanvasEnhanced result={result} activeLayout={activeLayout} />
+              {result && result.layouts.length > 1 && (
+                <div className="flex gap-2 justify-center">
+                  <Button onClick={() => handleNavigateLayout('prev')} disabled={activeLayout === 0} variant="outline" size="sm">
+                    <ChevronLeft className="w-4 h-4" /> Previous
+                  </Button>
+                  <span className="flex items-center px-4 text-sm font-medium">Sheet {activeLayout + 1} of {result.layouts.length}</span>
+                  <Button onClick={() => handleNavigateLayout('next')} disabled={activeLayout === result.layouts.length - 1} variant="outline" size="sm">
+                    Next <ChevronRight className="w-4 h-4" />
                   </Button>
                 </div>
-              </Card>
+              )}
             </TabsContent>
           </Tabs>
         </div>
@@ -423,6 +422,13 @@ export default function Home() {
             >
               <FileJson className="w-5 h-5" />
               <span className="text-xs">DXF</span>
+            </Button>
+            <Button 
+              onClick={handleExportCuttingList}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white flex flex-col items-center gap-1 h-auto py-3"
+            >
+              <FileText className="w-5 h-5" />
+              <span className="text-xs">List</span>
             </Button>
             <Button variant="outline" className="w-full flex flex-col items-center gap-1 h-auto py-3">
               <ArrowUpDown className="w-5 h-5" />

@@ -65,6 +65,9 @@ export interface CutPosition {
   width: number;
   height: number;
   rotated: boolean;
+  label?: string;
+  edgeBand?: EdgeBand;
+  groove?: Groove;
 }
 
 export interface CutLayout {
@@ -103,13 +106,15 @@ function guillotineLayout(
 
   // Simple greedy placement
   let usedArea = 0;
+  let pieceCounter = 0;
   for (const cut of remainingCuts) {
     for (let q = 0; q < cut.quantity; q++) {
       // Try to place the cut piece
-      const placement = findPlacement(positions, stock, cut, cutWidth);
+      const placement = findPlacement(positions, stock, cut, cutWidth, pieceCounter);
       if (placement) {
         positions.push(placement);
         usedArea += cut.length * cut.width;
+        pieceCounter++;
       }
     }
   }
@@ -133,7 +138,8 @@ function findPlacement(
   positions: CutPosition[],
   stock: StockPiece,
   cut: CutPiece,
-  cutWidth: number
+  cutWidth: number,
+  pieceIndex: number
 ): CutPosition | null {
   // Try different positions
   for (let x = 0; x <= stock.length - cut.length; x += 10) {
@@ -146,6 +152,9 @@ function findPlacement(
           width: cut.length,
           height: cut.width,
           rotated: false,
+          label: `${cut.label || 'Piece'} #${pieceIndex + 1}`,
+          edgeBand: cut.edgeBand,
+          groove: cut.groove,
         };
       }
     }
@@ -163,6 +172,9 @@ function findPlacement(
             width: cut.width,
             height: cut.length,
             rotated: true,
+            label: `${cut.label || 'Piece'} #${pieceIndex + 1}`,
+            edgeBand: cut.edgeBand,
+            groove: cut.groove,
           };
         }
       }
@@ -271,8 +283,8 @@ export function optimize(
  */
 export function generatePDFData(result: OptimizationResult): string {
   let pdfContent = '';
-  pdfContent += `FreeCut Optimization Report\n`;
-  pdfContent += `===========================\n\n`;
+  pdfContent += `Artniture Cutlist - Optimization Report\n`;
+  pdfContent += `========================================\n\n`;
   pdfContent += `Total Stock Used: ${result.totalStockUsed}\n`;
   pdfContent += `Total Cuts Needed: ${result.totalCutsNeeded}\n`;
   pdfContent += `Cuts Placed: ${result.cutsPlaced}\n`;
