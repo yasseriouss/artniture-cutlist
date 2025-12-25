@@ -1,0 +1,228 @@
+╔════════════════════════════════════════════════════════════════════════════════════╗
+║                    ARTNITURE CUTLIST - CUTTING LIST REPORT                        ║
+╚════════════════════════════════════════════════════════════════════════════════════╝
+
+SUMMARY
+═══════════════════════════════════════════════════════════════════════════════════
+Total Cut Pieces: 6
+Total Pieces to Cut: 21
+Total Stock Pieces: 2
+Report Generated: 12/25/2025, 9:30:45 AM
+
+CUTTING LIST - PIECES
+═══════════════════════════════════════════════════════════════════════════════════
+┌──┬────────┬───────┬────────┬──────────┬─────────┬────────┬──────────┬───────────┐
+│# │ Length │ Width │ Qty    │ Material │ Texture │ Label  │ EdgeBand │ Groove    │
+├──┼────────┼───────┼────────┼──────────┼─────────┼────────┼──────────┼───────────┤
+│1 │ 620    │ 570   │ 3      │ glass    │ smooth  │ john   │ Oak(2mm) │ H(3mm)    │
+├──┼────────┼───────┼────────┼──────────┼─────────┼────────┼──────────┼───────────┤
+│2 │ 600    │ 500   │ 5      │ wood     │ matte   │ mike   │ Walnut   │ V(2mm)    │
+├──┼────────┼───────┼────────┼──────────┼─────────┼────────┼──────────┼───────────┤
+│3 │ 650    │ 540   │ 7      │ glass    │ smooth  │ jenny  │ Walnut   │ H(3.5mm)  │
+├──┼────────┼───────┼────────┼──────────┼─────────┼────────┼──────────┼───────────┤
+│4 │ 890    │ 510   │ 2      │ wood     │ glossy  │ alice  │ Oak(2.5) │ -         │
+├──┼────────┼───────┼────────┼──────────┼─────────┼────────┼──────────┼───────────┤
+│5 │ 740    │ 680   │ 3      │ glass    │ smooth  │ jason  │ -        │ V(2mm)    │
+├──┼────────┼───────┼────────┼──────────┼─────────┼────────┼──────────┼───────────┤
+│6 │ 457    │ 0     │ 1      │ pipe     │ -       │ 1D     │ -        │ -         │
+└──┴────────┴───────┴────────┴──────────┴─────────┴────────┴──────────┴───────────┘
+
+EDGE BANDING DETAILS
+═══════════════════════════════════════════════════════════════════════════════════
+┌──────────────┬───────────┬─────┬─────┬─────────┬──────────┬──────────────────┐
+│ Material     │ Thickness │ Top │ Bot │ Left    │ Right    │ Pieces           │
+├──────────────┼───────────┼─────┼─────┼─────────┼──────────┼──────────────────┤
+│ Oak          │ 2         │ Yes │ No  │ No      │ Yes      │ 3                │
+├──────────────┼───────────┼─────┼─────┼─────────┼──────────┼──────────────────┤
+│ Oak          │ 2.5       │ Yes │ Yes │ Yes     │ Yes      │ 2                │
+├──────────────┼───────────┼─────┼─────┼─────────┼──────────┼──────────────────┤
+│ Walnut       │ 2         │ Yes │ Yes │ Yes     │ Yes      │ 5                │
+├──────────────┼───────────┼─────┼─────┼─────────┼──────────┼──────────────────┤
+│ Walnut       │ 3         │ Yes │ No  │ No      │ Yes      │ 7                │
+└──────────────┴───────────┴─────┴─────┴─────────┴──────────┴──────────────────┘
+
+EDGE BANDING SUMMARY
+═══════════════════════════════════════════════════════════════════════════════════
+Total Edge Banding Pieces: 17
+Total Pieces Without Edge Banding: 4
+
+Edge Banding Materials Required:
+  • Oak 2mm: 3 pieces (6 linear meters estimated)
+  • Oak 2.5mm: 2 pieces (5.2 linear meters estimated)
+  • Walnut 2mm: 5 pieces (11.8 linear meters estimated)
+  • Walnut 3mm: 7 pieces (16.5 linear meters estimated)
+
+GROOVE SPECIFICATIONS
+═══════════════════════════════════════════════════════════════════════════════════
+┌──────────────┬───────┬──────────────┬─────────┬──────────────────┐
+│ Piece        │ Width │ Direction    │ Offset  │ Quantity         │
+├──────────────┼───────┼──────────────┼─────────┼──────────────────┤
+│ john         │ 3     │ Horizontal   │ 0       │ 3                │
+├──────────────┼───────┼──────────────┼─────────┼──────────────────┤
+│ mike         │ 2     │ Vertical     │ 0       │ 5                │
+├──────────────┼───────┼──────────────┼─────────┼──────────────────┤
+│ jenny        │ 3.5   │ Horizontal   │ 0       │ 7                │
+├──────────────┼───────┼──────────────┼─────────┼──────────────────┤
+│ jason        │ 2     │ Vertical     │ 0       │ 3                │
+└──────────────┴───────┴──────────────┴─────────┴──────────────────┘
+
+GROOVE SUMMARY
+═══════════════════════════════════════════════════════════════════════════════════
+Total Pieces with Grooves: 18
+Total Pieces Without Grooves: 3
+
+Groove Types Required:
+  • Horizontal Grooves: 10 pieces (3mm and 3.5mm widths)
+  • Vertical Grooves: 8 pieces (2mm width)
+
+STOCK PIECES
+═══════════════════════════════════════════════════════════════════════════════════
+┌────────┬───────┬────────┬──────────┬─────────┬────────┬────────┐
+│ Length │ Width │ Qty    │ Material │ Texture │ Label  │ Price  │
+├────────┼───────┼────────┼──────────┼─────────┼────────┼────────┤
+│ 3000   │ 2000  │ 10     │ glass    │ smooth  │ 2D     │ 100    │
+├────────┼───────┼────────┼──────────┼─────────┼────────┼────────┤
+│ 2800   │ 0     │ 100    │ pipe     │ -       │ 1D     │ 0      │
+└────────┴───────┴────────┴──────────┴─────────┴────────┴────────┘
+
+STOCK UTILIZATION ANALYSIS
+═══════════════════════════════════════════════════════════════════════════════════
+
+Stock Panel 1 (3000 × 2000mm - Glass):
+  • Total Area: 6,000,000 mm²
+  • Used Area: 4,847,000 mm²
+  • Waste Area: 1,153,000 mm²
+  • Utilization: 80.78%
+  • Efficiency: Excellent
+
+Stock Panel 2 (2800 × 0mm - Pipe 1D):
+  • Total Length: 2,800 mm
+  • Used Length: 2,457 mm
+  • Waste Length: 343 mm
+  • Utilization: 87.75%
+  • Efficiency: Excellent
+
+OVERALL STATISTICS
+═══════════════════════════════════════════════════════════════════════════════════
+Total Pieces to Cut: 21
+Total Stock Used: 2 panels
+Average Utilization: 84.27%
+Total Waste: 1,496,000 mm² (1.5 m²)
+Estimated Cutting Time: 45-60 minutes
+Estimated Material Cost: $1,000 USD
+
+MATERIAL BREAKDOWN
+═══════════════════════════════════════════════════════════════════════════════════
+Glass Pieces: 15 pieces (3 + 7 + 5 = 15)
+Wood Pieces: 5 pieces (5 + 2 = 7)
+Pipe Pieces: 1 piece (1D)
+
+Edge Banding Materials:
+  • Oak 2mm: 3 pieces
+  • Oak 2.5mm: 2 pieces
+  • Walnut 2mm: 5 pieces
+  • Walnut 3mm: 7 pieces
+
+Groove Specifications:
+  • Horizontal: 10 pieces (3mm and 3.5mm)
+  • Vertical: 8 pieces (2mm)
+
+CUTTING INSTRUCTIONS
+═══════════════════════════════════════════════════════════════════════════════════
+
+Layout 1 - Primary Cutting Plan:
+1. Cut piece #1 (620×570mm) - Glass, smooth, label "john"
+   - Apply Oak 2mm edge band on Top and Right sides
+   - Add Horizontal groove 3mm width
+   - Quantity: 3 pieces
+
+2. Cut piece #2 (600×500mm) - Wood, matte, label "mike"
+   - Apply Walnut 2mm edge band on all sides (T, B, L, R)
+   - Add Vertical groove 2mm width
+   - Quantity: 5 pieces
+
+3. Cut piece #3 (650×540mm) - Glass, smooth, label "jenny"
+   - Apply Walnut 3mm edge band on Top and Right sides
+   - Add Horizontal groove 3.5mm width
+   - Quantity: 7 pieces
+
+4. Cut piece #4 (890×510mm) - Wood, glossy, label "alice"
+   - Apply Oak 2.5mm edge band on all sides (T, B, L, R)
+   - No groove
+   - Quantity: 2 pieces
+
+5. Cut piece #5 (740×680mm) - Glass, smooth, label "jason"
+   - No edge band
+   - Add Vertical groove 2mm width
+   - Quantity: 3 pieces
+
+6. Cut piece #6 (457mm) - Pipe, label "1D"
+   - 1D cutting (linear)
+   - No edge band or groove
+   - Quantity: 1 piece
+
+QUALITY CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════════
+□ All dimensions verified
+□ Edge banding materials confirmed
+□ Groove specifications checked
+□ Stock availability verified
+□ Cutting sequence optimized
+□ Waste minimized
+□ Quality standards met
+
+NOTES & RECOMMENDATIONS
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. Edge Banding Application:
+   - Apply edge banding after cutting pieces
+   - Use appropriate adhesive for each material type
+   - Allow 24 hours for adhesive to cure before further processing
+   - Sand edges smooth after application
+
+2. Groove Cutting:
+   - Use appropriate groove cutting tools for each direction
+   - Horizontal grooves: Use table saw with groove blade
+   - Vertical grooves: Use router with appropriate bit
+   - Ensure consistent depth (typically 3-5mm)
+
+3. Stock Management:
+   - Stock Panel 1: 80.78% utilization (excellent)
+   - Stock Panel 2: 87.75% utilization (excellent)
+   - Consider ordering extra stock for future projects (10% buffer)
+
+4. Cutting Sequence:
+   - Start with larger pieces to minimize waste
+   - Cut grooves before applying edge banding
+   - Apply edge banding as final step
+   - Allow proper curing time between steps
+
+5. Quality Assurance:
+   - Verify all dimensions before cutting
+   - Check edge banding adhesion after curing
+   - Inspect groove depth and alignment
+   - Final quality inspection before delivery
+
+═══════════════════════════════════════════════════════════════════════════════════
+Generated: 12/25/2025, 9:30:45 AM
+Artniture Cutlist - Professional Cutting List Optimizer
+Version: 1.0.0
+═══════════════════════════════════════════════════════════════════════════════════
+
+EXPORT INFORMATION
+═══════════════════════════════════════════════════════════════════════════════════
+Export Format: Text/PDF (ASCII Table Format)
+Export Date: 12/25/2025
+Export Time: 9:30:45 AM
+Total Pages: 1
+Total Sections: 12
+Total Data Points: 47
+
+For CAD/CNC integration, use the DXF export format which includes:
+  • Piece boundaries with dimensions
+  • Edge band visualization (orange layers)
+  • Groove lines (blue dashed layers)
+  • Piece labels and annotations
+  • Stock panel boundaries
+
+═══════════════════════════════════════════════════════════════════════════════════
